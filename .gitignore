@@ -1,4 +1,13 @@
+# Build artifacts
 build/
+
+# Compiled objects
 *.o
-*.exe
+*.out
+
+# Editor / OS junk
+.vscode/
+.DS_Store
+
+# Cache
 .cache/
