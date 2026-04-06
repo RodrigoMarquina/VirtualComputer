@@ -4,3 +4,5 @@
 
 //NAND gate declaration
 bool NAND(bool a, bool b); 
+
+bool NOT(bool a);
