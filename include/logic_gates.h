@@ -14,4 +14,8 @@ bool AND(bool a, bool b);
 
 bool XOR(bool a, bool b);
 
+bool OR(bool a, bool b);
+
 std::pair<bool, bool> HalfAdder(bool a, bool b);
+
+std::pair<bool, bool> FullAdder(bool a, bool b, bool c);
