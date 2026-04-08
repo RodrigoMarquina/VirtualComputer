@@ -160,3 +160,136 @@ TEST(MUXTest, Inputs110){
 TEST(MUXTest, Inputs111){
     EXPECT_EQ(MUX(1, 1, 1), 1);
 }
+
+//ALU
+TEST(ALUTest, SignFlagTest){
+    std::array<bool, 8> a = {0, 0, 0, 0, 0, 0, 1, 0};
+    std::array<bool, 8> b = {1, 0, 0, 0, 0, 1, 0, 0};
+    std::array<bool, 3> upcode = {0, 0, 0};
+    ALUStructure result = ALU(a, b, upcode);
+
+    std::array<bool, 8> c = {1, 0, 0, 0, 0, 1, 1, 0};
+
+    EXPECT_EQ(result.c, c);
+    EXPECT_EQ(result.signFlag, 1);
+    EXPECT_EQ(result.zeroFlag, 0);
+    EXPECT_EQ(result.overflowFlag, 0);
+}
+
+TEST(ALUTest, ZeroFlagTest){
+    std::array<bool, 8> a = {0, 0, 0, 0, 0, 1, 0, 0};
+    std::array<bool, 8> b = {1, 1, 1, 1, 1, 1, 0, 0};
+    std::array<bool, 3> upcode = {0, 0, 0};
+    ALUStructure result = ALU(a, b, upcode);
+
+    std::array<bool, 8> c = {0, 0, 0, 0, 0, 0, 0, 0};
+
+    EXPECT_EQ(result.c, c);
+    EXPECT_EQ(result.signFlag, 0);
+    EXPECT_EQ(result.zeroFlag, 1);
+    EXPECT_EQ(result.overflowFlag, 0);
+}
+
+TEST(ALUTest, OverFlowFlagTest){
+    std::array<bool, 8> a = {0, 1, 1, 1, 1, 1, 1, 1};
+    std::array<bool, 8> b = {0, 0, 0, 0, 0, 0, 0, 1};
+    std::array<bool, 3> upcode = {0, 0, 0};
+    ALUStructure result = ALU(a, b, upcode);
+
+    std::array<bool, 8> c = {1, 0, 0, 0, 0, 0, 0, 0};
+    EXPECT_EQ(result.c, c);
+    EXPECT_EQ(result.signFlag, 1);
+    EXPECT_EQ(result.zeroFlag, 0);
+    EXPECT_EQ(result.overflowFlag, 1);
+}
+
+TEST(ALUTest, ADDTest){
+    std::array<bool, 8> a = {0, 0, 0, 1, 0, 1, 1, 0};
+    std::array<bool, 8> b = {0, 0, 1, 0, 1, 0, 1, 0};
+    std::array<bool, 3> upcode = {0, 0, 0};
+    ALUStructure result = ALU(a, b, upcode);
+
+    std::array<bool, 8> c = {0, 1, 0, 0, 0, 0, 0, 0};
+    EXPECT_EQ(result.c, c);
+    EXPECT_EQ(result.signFlag, 0);
+    EXPECT_EQ(result.zeroFlag, 0);
+    EXPECT_EQ(result.overflowFlag, 0);
+}
+
+TEST(ALUTest, SUBTest){
+    std::array<bool, 8> a = {0, 0, 1, 1, 0, 1, 1, 1};
+    std::array<bool, 8> b = {0, 1, 0, 0, 0, 1, 1, 0};
+    std::array<bool, 3> upcode = {0, 0, 1};
+    ALUStructure result = ALU(a, b, upcode);
+
+    std::array<bool, 8> c = {1, 1, 1, 1, 0, 0, 0, 1};
+    EXPECT_EQ(result.c, c);
+    EXPECT_EQ(result.signFlag, 1);
+    EXPECT_EQ(result.zeroFlag, 0);
+    EXPECT_EQ(result.overflowFlag, 0);
+}
+
+TEST(ALUTest, NOTTest){
+    std::array<bool, 8> a = {0, 0, 1, 1, 0, 1, 0, 1};
+    std::array<bool, 8> b = {0, 1, 0, 1, 0, 1, 0, 0};
+    std::array<bool, 3> upcode = {0, 1, 0};
+    ALUStructure result = ALU(a, b, upcode);
+
+    std::array<bool, 8> c = {1, 1, 0, 0, 1, 0, 1, 0};
+    EXPECT_EQ(result.c, c);
+    EXPECT_EQ(result.signFlag, 1);
+    EXPECT_EQ(result.zeroFlag, 0);
+    EXPECT_EQ(result.overflowFlag, 0);
+}
+
+TEST(ALUTest, ANDTest){
+    std::array<bool, 8> a = {0, 1, 1, 1, 1, 1, 0, 1};
+    std::array<bool, 8> b = {0, 1, 0, 1, 1, 0, 1, 0};
+    std::array<bool, 3> upcode = {0, 1, 1};
+    ALUStructure result = ALU(a, b, upcode);
+
+    std::array<bool, 8> c = {0, 1, 0, 1, 1, 0, 0, 0};
+    EXPECT_EQ(result.c, c);
+    EXPECT_EQ(result.signFlag, 0);
+    EXPECT_EQ(result.zeroFlag, 0);
+    EXPECT_EQ(result.overflowFlag, 0);
+}
+
+TEST(ALUTest, ORTest){
+    std::array<bool, 8> a = {1, 0, 0, 0, 1, 1, 0, 0};
+    std::array<bool, 8> b = {0, 1, 1, 0, 1, 0, 1, 0};
+    std::array<bool, 3> upcode = {1, 0, 0};
+    ALUStructure result = ALU(a, b, upcode);
+
+    std::array<bool, 8> c = {1, 1, 1, 0, 1, 1, 1, 0};
+    EXPECT_EQ(result.c, c);
+    EXPECT_EQ(result.signFlag, 1);
+    EXPECT_EQ(result.zeroFlag, 0);
+    EXPECT_EQ(result.overflowFlag, 0);
+}
+
+TEST(ALUTest, NANDTest){
+    std::array<bool, 8> a = {0, 1, 0, 0, 1, 1, 0, 1};
+    std::array<bool, 8> b = {1, 0, 0, 1, 1, 0, 1, 1};
+    std::array<bool, 3> upcode = {1, 0, 1};
+    ALUStructure result = ALU(a, b, upcode);
+
+    std::array<bool, 8> c = {1, 1, 1, 1, 0, 1, 1, 0};
+    EXPECT_EQ(result.c, c);
+    EXPECT_EQ(result.signFlag, 1);
+    EXPECT_EQ(result.zeroFlag, 0);
+    EXPECT_EQ(result.overflowFlag, 0);
+}
+
+TEST(ALUTest, XORTest){
+    std::array<bool, 8> a = {0, 1, 1, 1, 0, 0, 0, 1};
+    std::array<bool, 8> b = {0, 0, 1, 1, 0, 1, 1, 0};
+    std::array<bool, 3> upcode = {1, 1, 0};
+    ALUStructure result = ALU(a, b, upcode);
+
+    std::array<bool, 8> c = {0, 1, 0, 0, 0, 1, 1, 1};
+    EXPECT_EQ(result.c, c);
+    EXPECT_EQ(result.signFlag, 0);
+    EXPECT_EQ(result.zeroFlag, 0);
+    EXPECT_EQ(result.overflowFlag, 0);
+}
