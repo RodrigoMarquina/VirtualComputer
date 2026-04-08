@@ -33,3 +33,9 @@ std::pair<bool, bool> FullAdder(bool a, bool b, bool c){
     std::pair<bool, bool> HA2 = HalfAdder(HA1.first, c);
     return std::make_pair(HA2.first, OR(HA1.second, HA2.second));
 }
+
+//bool OverFlow()
+
+bool MUX(bool sel, bool a, bool b){
+    return OR(AND(a, NOT(sel)), AND(b, sel));
+}

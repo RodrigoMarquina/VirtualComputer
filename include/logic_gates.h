@@ -19,3 +19,5 @@ bool OR(bool a, bool b);
 std::pair<bool, bool> HalfAdder(bool a, bool b);
 
 std::pair<bool, bool> FullAdder(bool a, bool b, bool c);
+
+bool MUX(bool sel, bool a, bool b);
