@@ -127,3 +127,36 @@ TEST(FullAdderTest, Inputs110){
 TEST(FullAdderTest, Inputs111){
     EXPECT_EQ(FullAdder(1, 1, 1), std::make_pair(1, 1));
 }
+
+//MUX
+TEST(MUXTest, Inputs000){
+    EXPECT_EQ(MUX(0, 0, 0), 0);
+}
+
+TEST(MUXTest, Inputs001){
+    EXPECT_EQ(MUX(0, 0, 1), 0);
+}
+
+TEST(MUXTest, Inputs010){
+    EXPECT_EQ(MUX(0, 1, 0), 1);
+}
+
+TEST(MUXTest, Inputs011){
+    EXPECT_EQ(MUX(0, 1, 1), 1);
+}
+
+TEST(MUXTest, Inputs100){
+    EXPECT_EQ(MUX(1, 0, 0), 0);
+}
+
+TEST(MUXTest, Inputs101){
+    EXPECT_EQ(MUX(1, 0, 1), 1);
+}
+
+TEST(MUXTest, Inputs110){
+    EXPECT_EQ(MUX(1, 1, 0), 0);
+}
+
+TEST(MUXTest, Inputs111){
+    EXPECT_EQ(MUX(1, 1, 1), 1);
+}
