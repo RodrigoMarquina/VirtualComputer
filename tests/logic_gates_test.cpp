@@ -293,3 +293,54 @@ TEST(ALUTest, XORTest){
     EXPECT_EQ(result.zeroFlag, 0);
     EXPECT_EQ(result.overflowFlag, 0);
 }
+
+//SRLatch
+TEST(SRLatchTest, Inputs00){
+    EXPECT_EQ(SRLatch(0, 0, 1), 1);
+}
+
+TEST(SRLatchTest, Inputs01){
+    EXPECT_EQ(SRLatch(0, 1, 0), 0);
+}
+
+TEST(SRLatchTest, Inputs10){
+    EXPECT_EQ(SRLatch(1, 0, 0), 1);
+}
+
+TEST(SRLatchTest, Inputs11){
+    EXPECT_THROW(SRLatch(1, 1, 0), std::runtime_error);
+}
+
+//Register
+TEST(Register, Write){
+    std::array<bool, 8> d = {0, 1, 1, 1, 0, 0, 0, 1};
+    bool we = 1;
+    bool reset = 0;
+    std::array<bool, 8> q = {0, 0, 1, 1, 0, 0, 0, 0};
+    std::array<bool, 8> output = Register(d, we, reset, q);
+
+    std::array<bool, 8> expected = {0, 1, 1, 1, 0, 0, 0, 1};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(Register, Hold){
+    std::array<bool, 8> d = {1, 0, 0, 1, 0, 0, 0, 0};
+    bool we = 0;
+    bool reset = 0;
+    std::array<bool, 8> q = {0, 1, 0, 0, 0, 1, 0, 1};
+    std::array<bool, 8> output = Register(d, we, reset, q);
+
+    std::array<bool, 8> expected = {0, 1, 0, 0, 0, 1, 0, 1};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(Register, Reset){
+    std::array<bool, 8> d = {0, 1, 0, 0, 0, 0, 0, 1};
+    bool we = 0;
+    bool reset = 1;
+    std::array<bool, 8> q = {0, 1, 0, 0, 0, 1, 0, 1};
+    std::array<bool, 8> output = Register(d, we, reset, q);
+
+    std::array<bool, 8> expected = {0, 0, 0, 0, 0, 0, 0, 0};
+    EXPECT_EQ(output, expected);
+}

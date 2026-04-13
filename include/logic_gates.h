@@ -3,6 +3,7 @@
 #include <iostream>
 #include <utility>
 #include <array>
+#include <stdexcept>
 
 //Header file with the declarations of the logic gates.
 
@@ -33,3 +34,7 @@ struct ALUStructure{
 ALUStructure MUXFields(bool sel, ALUStructure field1, ALUStructure field2);
 
 ALUStructure ALU(std::array<bool, 8> a, std::array<bool, 8> b, std::array<bool, 3> upcode);
+
+bool SRLatch(bool s, bool r, bool q);
+
+std::array<bool, 8> Register(std::array<bool, 8> d, bool we, bool reset, std::array<bool, 8> q);
