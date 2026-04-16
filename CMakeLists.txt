@@ -23,11 +23,12 @@ add_executable(virtual-computer
     src/alu.cpp
     src/memory.cpp
     src/cpu.cpp
+    src/assembler.cpp
     src/minesweeper.cpp
     src/main.cpp
 )
 
-add_library(virtual_computer_library STATIC src/logic_gates.cpp src/alu.cpp src/memory.cpp src/cpu.cpp src/minesweeper.cpp)
+add_library(virtual_computer_library STATIC src/logic_gates.cpp src/alu.cpp src/memory.cpp src/cpu.cpp src/assembler.cpp src/minesweeper.cpp)
 
 target_include_directories(virtual_computer_library PUBLIC include)
 

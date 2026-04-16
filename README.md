@@ -51,3 +51,9 @@ This project is also a hands-on CI/CD learning exercise. Every milestone is comm
 ## Why
 
 Understanding what a computer actually is — at the level of gates, memory, and instruction cycles — permanently changes how you write code. Cache misses stop being abstract. Pointer arithmetic makes physical sense. This is the foundation.
+
+
+LOAD 0
+ADD 1
+ADD 2
+STORE 0

@@ -2,6 +2,7 @@
 #include "alu.h"
 #include "memory.h"
 #include "cpu.h"
+#include "assembler.h"
 #include "minesweeper.h"
 #include <gtest/gtest.h>
 
@@ -362,6 +363,20 @@ TEST(CPU, Load){
     EXPECT_EQ(output, expected);
 }
 
+TEST(CPU, Store){
+    CPU cpuTest;
+    cpuTest.setRegister(std::array<bool, 8> {1, 1, 1, 1, 1, 1, 1, 1}, 2);
+    cpuTest.instructionMemory[0] = std::array<bool, 8> {0, 1, 1, 1, 0, 0, 1, 0}; //Loads register 2 to the accumulator
+    cpuTest.instructionMemory[1] = std::array<bool, 8> {1, 0, 0, 0, 0, 1, 0, 0}; //Stores value from accumulator to register 4
+
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+
+    std::array<bool, 8> output = cpuTest.getRegister(4);
+    std::array<bool, 8> expected = {1, 1, 1, 1, 1, 1, 1, 1};
+    EXPECT_EQ(output, expected);  
+}
+
 TEST(CPU, Add){
     CPU cpuTest;
     cpuTest.setRegister(std::array<bool, 8> {0, 1, 0, 0, 0, 1, 0, 1}, 10);
@@ -376,3 +391,31 @@ TEST(CPU, Add){
     std::array<bool, 8> expected = {0, 1, 0, 0, 1, 0, 0, 0};
     EXPECT_EQ(output, expected);
 }
+
+//Assembler
+TEST(Assembler, decimalToByteTest){
+    std::array<bool, 8> output = decimalToByte(5);
+    std::array<bool, 8> expected = {0, 0, 0, 0, 0, 1, 0, 1};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(Assembler, addTest){
+    std::array<std::array<bool, 8>, 256> assemblerMemory = assembler("AssemblerCodeTest.txt");
+
+    CPU cpuTest;
+    cpuTest.instructionMemory = assemblerMemory;
+
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 1, 0, 1}, 0);
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 1, 0, 1, 0, 1}, 1);
+    cpuTest.setRegister(std::array<bool, 8> {0, 1, 0, 0, 0, 0, 0, 0}, 2);
+
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {0, 1, 0, 1, 1, 0, 1, 0};
+    EXPECT_EQ(output, expected);
+}
+

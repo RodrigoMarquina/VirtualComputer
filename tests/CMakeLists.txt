@@ -5,3 +5,5 @@ add_executable(virtual-computer-gtest
 target_link_libraries(virtual-computer-gtest virtual_computer_library gtest_main)
 
 gtest_discover_tests(virtual-computer-gtest)
+
+configure_file(AssemblerCodeTest.txt ${CMAKE_CURRENT_BINARY_DIR}/AssemblerCodeTest.txt COPYONLY)

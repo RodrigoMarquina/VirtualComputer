@@ -28,3 +28,7 @@ std::array<bool, 8> CPU::getAccumulator(){
 void CPU::setRegister(std::array<bool, 8> a, int index){
     dataMemory[index] = a;
 }
+
+std::array<bool, 8> CPU::getRegister(int index){
+    return dataMemory[index];
+}
