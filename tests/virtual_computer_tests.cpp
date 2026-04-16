@@ -1,4 +1,8 @@
 #include "logic_gates.h"
+#include "alu.h"
+#include "memory.h"
+#include "cpu.h"
+#include "minesweeper.h"
 #include <gtest/gtest.h>
 
 //NAND Gate
@@ -292,4 +296,83 @@ TEST(ALUTest, XORTest){
     EXPECT_EQ(result.signFlag, 0);
     EXPECT_EQ(result.zeroFlag, 0);
     EXPECT_EQ(result.overflowFlag, 0);
+}
+
+//SRLatch
+TEST(SRLatchTest, Inputs00){
+    EXPECT_EQ(SRLatch(0, 0, 1), 1);
+}
+
+TEST(SRLatchTest, Inputs01){
+    EXPECT_EQ(SRLatch(0, 1, 0), 0);
+}
+
+TEST(SRLatchTest, Inputs10){
+    EXPECT_EQ(SRLatch(1, 0, 0), 1);
+}
+
+TEST(SRLatchTest, Inputs11){
+    EXPECT_THROW(SRLatch(1, 1, 0), std::runtime_error);
+}
+
+//Register
+TEST(Register, Write){
+    std::array<bool, 8> d = {0, 1, 1, 1, 0, 0, 0, 1};
+    bool we = 1;
+    bool reset = 0;
+    std::array<bool, 8> q = {0, 0, 1, 1, 0, 0, 0, 0};
+    std::array<bool, 8> output = Register(d, we, reset, q);
+
+    std::array<bool, 8> expected = {0, 1, 1, 1, 0, 0, 0, 1};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(Register, Hold){
+    std::array<bool, 8> d = {1, 0, 0, 1, 0, 0, 0, 0};
+    bool we = 0;
+    bool reset = 0;
+    std::array<bool, 8> q = {0, 1, 0, 0, 0, 1, 0, 1};
+    std::array<bool, 8> output = Register(d, we, reset, q);
+
+    std::array<bool, 8> expected = {0, 1, 0, 0, 0, 1, 0, 1};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(Register, Reset){
+    std::array<bool, 8> d = {0, 1, 0, 0, 0, 0, 0, 1};
+    bool we = 0;
+    bool reset = 1;
+    std::array<bool, 8> q = {0, 1, 0, 0, 0, 1, 0, 1};
+    std::array<bool, 8> output = Register(d, we, reset, q);
+
+    std::array<bool, 8> expected = {0, 0, 0, 0, 0, 0, 0, 0};
+    EXPECT_EQ(output, expected);
+}
+
+//CPU
+TEST(CPU, Load){
+    CPU cpuTest;
+    cpuTest.setRegister(std::array<bool, 8> {0, 1, 0, 1, 0, 1, 0, 1}, 8);
+    cpuTest.instructionMemory[0] = std::array<bool, 8> {0, 1, 1, 1, 1, 0, 0, 0}; //Upcode goes first
+    
+    cpuTest.iterateCPU();
+
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {0, 1, 0, 1, 0, 1, 0, 1};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(CPU, Add){
+    CPU cpuTest;
+    cpuTest.setRegister(std::array<bool, 8> {0, 1, 0, 0, 0, 1, 0, 1}, 10);
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 0, 1, 1}, 12);
+    cpuTest.instructionMemory[0] = std::array<bool, 8> {0, 1, 1, 1, 1, 0, 1, 0}; 
+    cpuTest.instructionMemory[1] = std::array<bool, 8> {0, 0, 0, 0, 1, 1, 0, 0};
+
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {0, 1, 0, 0, 1, 0, 0, 0};
+    EXPECT_EQ(output, expected);
 }
