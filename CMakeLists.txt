@@ -19,11 +19,16 @@ if(BUILD_TESTS)
 endif()
 
 add_executable(virtual-computer
+    src/logic_gates.cpp
+    src/alu.cpp
+    src/memory.cpp
+    src/cpu.cpp
+    src/minesweeper.cpp
     src/main.cpp
 )
 
-add_library(logic_gates STATIC src/logic_gates.cpp)
+add_library(virtual_computer_library STATIC src/logic_gates.cpp src/alu.cpp src/memory.cpp src/cpu.cpp src/minesweeper.cpp)
 
-target_include_directories(logic_gates PUBLIC include)
+target_include_directories(virtual_computer_library PUBLIC include)
 
-target_link_libraries(virtual-computer logic_gates)
+target_link_libraries(virtual-computer virtual_computer_library)

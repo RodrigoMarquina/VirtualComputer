@@ -1,4 +1,8 @@
 #include "logic_gates.h"
+#include "alu.h"
+#include "memory.h"
+#include "cpu.h"
+#include "minesweeper.h"
 #include <gtest/gtest.h>
 
 //NAND Gate
@@ -342,5 +346,33 @@ TEST(Register, Reset){
     std::array<bool, 8> output = Register(d, we, reset, q);
 
     std::array<bool, 8> expected = {0, 0, 0, 0, 0, 0, 0, 0};
+    EXPECT_EQ(output, expected);
+}
+
+//CPU
+TEST(CPU, Load){
+    CPU cpuTest;
+    cpuTest.setRegister(std::array<bool, 8> {0, 1, 0, 1, 0, 1, 0, 1}, 8);
+    cpuTest.instructionMemory[0] = std::array<bool, 8> {0, 1, 1, 1, 1, 0, 0, 0}; //Upcode goes first
+    
+    cpuTest.iterateCPU();
+
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {0, 1, 0, 1, 0, 1, 0, 1};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(CPU, Add){
+    CPU cpuTest;
+    cpuTest.setRegister(std::array<bool, 8> {0, 1, 0, 0, 0, 1, 0, 1}, 10);
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 0, 1, 1}, 12);
+    cpuTest.instructionMemory[0] = std::array<bool, 8> {0, 1, 1, 1, 1, 0, 1, 0}; 
+    cpuTest.instructionMemory[1] = std::array<bool, 8> {0, 0, 0, 0, 1, 1, 0, 0};
+
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {0, 1, 0, 0, 1, 0, 0, 0};
     EXPECT_EQ(output, expected);
 }

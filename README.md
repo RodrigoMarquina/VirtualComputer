@@ -27,6 +27,16 @@ No `&&`, no `||`, no `!` anywhere else in the codebase. Every logic gate, every 
 8. Minesweeper         — A working game running on top of the architecture
 ```
 
+ADD     0000
+SUB     0001
+NOT     0010
+AND     0011
+OR      0100
+NAND    0101
+XOR     0110
+LOAD    0111
+STORE   1000    
+
 Each milestone is a shippable, testable unit. Nothing moves forward until the current stage works and is understood.
 
 ## Secondary Purpose — CI/CD
