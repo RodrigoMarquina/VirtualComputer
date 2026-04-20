@@ -36,6 +36,9 @@ NAND    0101
 XOR     0110
 LOAD    0111
 STORE   1000    
+JUMP    1001
+JUMPZ   1010
+JUMPS   1011
 
 Each milestone is a shippable, testable unit. Nothing moves forward until the current stage works and is understood.
 
