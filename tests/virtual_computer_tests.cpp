@@ -354,7 +354,7 @@ TEST(Register, Reset){
 TEST(CPU, Load){
     CPU cpuTest;
     cpuTest.setRegister(std::array<bool, 8> {0, 1, 0, 1, 0, 1, 0, 1}, 8);
-    cpuTest.instructionMemory[0] = std::array<bool, 8> {0, 1, 1, 1, 1, 0, 0, 0}; //Upcode goes first
+    cpuTest.instructionMemory[0] = std::array<bool, 16> {0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0}; //Upcode goes first
     
     cpuTest.iterateCPU();
 
@@ -366,8 +366,8 @@ TEST(CPU, Load){
 TEST(CPU, Store){
     CPU cpuTest;
     cpuTest.setRegister(std::array<bool, 8> {1, 1, 1, 1, 1, 1, 1, 1}, 2);
-    cpuTest.instructionMemory[0] = std::array<bool, 8> {0, 1, 1, 1, 0, 0, 1, 0}; //Loads register 2 to the accumulator
-    cpuTest.instructionMemory[1] = std::array<bool, 8> {1, 0, 0, 0, 0, 1, 0, 0}; //Stores value from accumulator to register 4
+    cpuTest.instructionMemory[0] = std::array<bool, 16> {0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0}; //Loads register 2 to the accumulator
+    cpuTest.instructionMemory[1] = std::array<bool, 16> {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0}; //Stores value from accumulator to register 4
 
     cpuTest.iterateCPU();
     cpuTest.iterateCPU();
@@ -381,8 +381,8 @@ TEST(CPU, Add){
     CPU cpuTest;
     cpuTest.setRegister(std::array<bool, 8> {0, 1, 0, 0, 0, 1, 0, 1}, 10);
     cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 0, 1, 1}, 12);
-    cpuTest.instructionMemory[0] = std::array<bool, 8> {0, 1, 1, 1, 1, 0, 1, 0}; 
-    cpuTest.instructionMemory[1] = std::array<bool, 8> {0, 0, 0, 0, 1, 1, 0, 0};
+    cpuTest.instructionMemory[0] = std::array<bool, 16> {0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0}; 
+    cpuTest.instructionMemory[1] = std::array<bool, 16> {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0};
 
     cpuTest.iterateCPU();
     cpuTest.iterateCPU();
@@ -394,13 +394,13 @@ TEST(CPU, Add){
 
 //Assembler
 TEST(Assembler, decimalToByteTest){
-    std::array<bool, 8> output = decimalToByte(5);
+    std::array<bool, 8> output = decimalToBinary<8>(5);
     std::array<bool, 8> expected = {0, 0, 0, 0, 0, 1, 0, 1};
     EXPECT_EQ(output, expected);
 }
 
 TEST(Assembler, addTest){
-    std::array<std::array<bool, 8>, 256> assemblerMemory = assembler("AssemblerCodeTest.txt");
+    std::array<std::array<bool, 16>, 256> assemblerMemory = assembler("AddTest.txt");
 
     CPU cpuTest;
     cpuTest.instructionMemory = assemblerMemory;
@@ -419,3 +419,121 @@ TEST(Assembler, addTest){
     EXPECT_EQ(output, expected);
 }
 
+TEST(Assembler, subTest){
+    std::array<std::array<bool, 16>, 256> assemblerMemory = assembler("SubTest.txt");
+
+    CPU cpuTest;
+    cpuTest.instructionMemory = assemblerMemory;
+
+    cpuTest.setRegister(std::array<bool, 8> {1, 1, 1, 1, 1, 1, 0, 1}, 0);
+    cpuTest.setRegister(std::array<bool, 8> {1, 1, 1, 1, 1, 1, 0, 1}, 1);
+
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {1, 1, 1, 1, 1, 0, 1, 0};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(Assembler, jumpTest){
+    std::array<std::array<bool, 16>, 256> assemblerMemory = assembler("JumpTest.txt");
+
+    CPU cpuTest;
+    cpuTest.instructionMemory = assemblerMemory;
+
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 0, 0, 1}, 0);
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 0, 0, 1}, 1);
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 0, 0, 1}, 2);
+
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {0, 0, 0, 0, 0, 0, 1, 0};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(Assembler, jumpZeroTestTrue){ //Jumps if register is 0. So zero flag has to be 1.
+    std::array<std::array<bool, 16>, 256> assemblerMemory = assembler("JumpZeroTestTrue.txt");
+
+    CPU cpuTest;
+    cpuTest.instructionMemory = assemblerMemory;
+
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 0, 0, 0}, 0);
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 0, 1, 0}, 1);
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 1, 0, 0, 0}, 2);
+
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {0, 0, 0, 0, 1, 0, 0, 0};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(Assembler, jumpZeroTestFalse){ //Jumps if register is 0. So zero flag has to be 1.
+    std::array<std::array<bool, 16>, 256> assemblerMemory = assembler("JumpZeroTestFalse.txt");
+
+    CPU cpuTest;
+    cpuTest.instructionMemory = assemblerMemory;
+
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 0, 0, 1}, 0);
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 0, 1, 0}, 1);
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 1, 0, 0, 0}, 2);
+
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {0, 0, 0, 0, 1, 0, 1, 1};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(Assembler, jumpSignTestTrue){
+    std::array<std::array<bool, 16>, 256> assemblerMemory = assembler("JumpSignTestTrue.txt");
+
+    CPU cpuTest;
+    cpuTest.instructionMemory = assemblerMemory;
+
+    cpuTest.setRegister(std::array<bool, 8> {1, 1, 1, 1, 1, 1, 0, 1}, 0);
+    cpuTest.setRegister(std::array<bool, 8> {1, 1, 1, 1, 1, 1, 0, 1}, 1);
+
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {1, 1, 1, 1, 1, 0, 1, 0};
+    EXPECT_EQ(output, expected);
+}
+
+TEST(Assembler, jumpSignTestFalse){
+    std::array<std::array<bool, 16>, 256> assemblerMemory = assembler("JumpSignTestFalse.txt");
+
+    CPU cpuTest;
+    cpuTest.instructionMemory = assemblerMemory;
+
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 1, 1, 1, 0, 1}, 0);
+    cpuTest.setRegister(std::array<bool, 8> {0, 0, 0, 0, 0, 1, 0, 0}, 1);
+
+    cpuTest.iterateCPU();
+    cpuTest.iterateCPU();
+
+    std::array<bool, 8> output = cpuTest.getAccumulator();
+    std::array<bool, 8> expected = {0, 0, 0, 1, 1, 1, 0, 1};
+    EXPECT_EQ(output, expected);
+}

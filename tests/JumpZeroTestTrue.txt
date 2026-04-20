@@ -1,0 +1,4 @@
+LOAD 0
+JUMPZ 3
+ADD 1
+ADD 2

@@ -1,0 +1,4 @@
+LOAD 4
+JUMP 7
+ADD 5
+ADD 6
