@@ -28,6 +28,8 @@ add_executable(virtual-computer
     src/main.cpp
 )
 
+configure_file(Minesweeper.txt ${CMAKE_CURRENT_BINARY_DIR}/Minesweeper.txt COPYONLY)
+
 add_library(virtual_computer_library STATIC src/logic_gates.cpp src/alu.cpp src/memory.cpp src/cpu.cpp src/assembler.cpp src/minesweeper.cpp)
 
 target_include_directories(virtual_computer_library PUBLIC include)

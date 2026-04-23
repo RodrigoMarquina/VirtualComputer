@@ -490,13 +490,6 @@ TEST(Assembler, jumpZeroTestFalse){ //Jumps if register is 0. So zero flag has t
     cpuTest.iterateCPU();
     cpuTest.iterateCPU();
     cpuTest.iterateCPU();
-    cpuTest.iterateCPU();
-    cpuTest.iterateCPU();
-    cpuTest.iterateCPU();
-    cpuTest.iterateCPU();
-    cpuTest.iterateCPU();
-    cpuTest.iterateCPU();
-    cpuTest.iterateCPU();
 
     std::array<bool, 8> output = cpuTest.getAccumulator();
     std::array<bool, 8> expected = {0, 0, 0, 0, 1, 0, 1, 1};

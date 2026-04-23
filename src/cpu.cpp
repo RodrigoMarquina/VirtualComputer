@@ -1,7 +1,7 @@
 #include "cpu.h"
 #include "memory.h"
 
-void CPU::iterateCPU(){
+bool CPU::iterateCPU(){
     int counterIndex = binaryToDecimal(instructionCounter);
     std::array<bool, 16> currentInstruction = instructionMemory[counterIndex];
     std::array<bool, 4> upcode = {currentInstruction[0], currentInstruction[1], currentInstruction[2], currentInstruction[3]};
@@ -47,6 +47,9 @@ void CPU::iterateCPU(){
             instructionCounter = incrementBinaryNumber(instructionCounter);
         }
     }
+    else if(upcode == std::array<bool, 4> {1, 1, 0, 0}){ //Halt
+        return false;
+    }
     else{
         ALUStructure ALUOutput = ALU(dataMemory[addressAIndex], accumulator, std::array<bool, 3> {upcode[1], upcode[2], upcode[3]});
         zeroFlag = ALUOutput.zeroFlag;
@@ -54,6 +57,7 @@ void CPU::iterateCPU(){
         accumulator = ALUOutput.c;
         instructionCounter = incrementBinaryNumber(instructionCounter);
     }    
+    return true;
 }
 
 std::array<bool, 8> CPU::getAccumulator(){
@@ -66,4 +70,8 @@ void CPU::setRegister(std::array<bool, 8> a, int index){
 
 std::array<bool, 8> CPU::getRegister(int index){
     return dataMemory[index];
+}
+
+void CPU::resetCounter(){
+    instructionCounter = {0, 0, 0, 0, 0, 0, 0, 0};
 }

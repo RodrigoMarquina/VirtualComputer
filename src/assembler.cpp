@@ -87,6 +87,11 @@ std::array<std::array<bool, 16>, 256> assembler(std::string assemblerCode){
             instruction[1] = 0;
             instruction[2] = 1;
             instruction[3] = 1;
+        } else if(command == "HALT"){
+            instruction[0] = 1;
+            instruction[1] = 1;
+            instruction[2] = 0;
+            instruction[3] = 0;
         } else{
             throw std::runtime_error("Incorrect command");
         }
